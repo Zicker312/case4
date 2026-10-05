@@ -1,0 +1,20 @@
+{
+  "info": {"name": "Maintenance API — Case 3 PostgreSQL", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"},
+  "variable": [{"key":"baseUrl","value":"http://localhost:3000"},{"key":"equipmentId","value":""},{"key":"requestId","value":""},{"key":"siteId","value":""},{"key":"technicianId","value":""}],
+  "item": [
+    {"name":"Health","request":{"method":"GET","url":"{{baseUrl}}/api/health"}},
+    {"name":"Equipment list","request":{"method":"GET","url":"{{baseUrl}}/api/equipment?page=1&limit=10&sort=name&order=asc"}},
+    {"name":"Equipment by id","request":{"method":"GET","url":"{{baseUrl}}/api/equipment/{{equipmentId}}"}},
+    {"name":"Equipment requests","request":{"method":"GET","url":"{{baseUrl}}/api/equipment/{{equipmentId}}/requests"}},
+    {"name":"Requests list","request":{"method":"GET","url":"{{baseUrl}}/api/requests?status=new&priority=high&page=1&limit=10"}},
+    {"name":"Request by id","request":{"method":"GET","url":"{{baseUrl}}/api/requests/{{requestId}}"}},
+    {"name":"Assign team — valid","request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"assignees\":[{\"technicianId\":\"{{technicianId}}\",\"role\":\"lead\",\"hours\":4}]}"},"url":"{{baseUrl}}/api/requests/{{requestId}}/assignees"}},
+    {"name":"Request history","request":{"method":"GET","url":"{{baseUrl}}/api/requests/{{requestId}}/history"}},
+    {"name":"Site summary","request":{"method":"GET","url":"{{baseUrl}}/api/sites/{{siteId}}/summary"}},
+    {"name":"Equipment load report","request":{"method":"GET","url":"{{baseUrl}}/api/reports/equipment-load?minRequests=1"}},
+    {"name":"Status in_progress — without team (409)","request":{"method":"PATCH","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"status\":\"in_progress\"}"},"url":"{{baseUrl}}/api/requests/{{requestId}}/status"}},
+    {"name":"Assign without lead (422)","request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"assignees\":[{\"technicianId\":\"{{technicianId}}\",\"role\":\"member\",\"hours\":2}]}"},"url":"{{baseUrl}}/api/requests/{{requestId}}/assignees"}},
+    {"name":"Assign nonexistent technician (404)","request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"assignees\":[{\"technicianId\":\"00000000-0000-0000-0000-000000000000\",\"role\":\"lead\",\"hours\":2}]}"},"url":"{{baseUrl}}/api/requests/{{requestId}}/assignees"}},
+    {"name":"Duplicate serial (409)","request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"name\":\"Дубликат\",\"type\":\"sensor\",\"serialNumber\":\"EQ-001\",\"location\":{\"lat\":55.75,\"lon\":37.61},\"installedAt\":\"2024-01-01T10:00:00Z\"}"},"url":"{{baseUrl}}/api/equipment"}}
+  ]
+}

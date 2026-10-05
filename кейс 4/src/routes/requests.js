@@ -1,0 +1,10 @@
+import { Router } from 'express';
+import * as controller from '../controllers/requestController.js';
+import { asyncHandler } from '../middlewares/asyncHandler.js';
+import { authenticate } from '../middlewares/auth.js';
+import { readAccess, writeAccess, adminAccess } from '../middlewares/rolePolicy.js';
+const router=Router(); router.use(authenticate);
+router.get('/',readAccess,asyncHandler(controller.list)); router.get('/:id/history',readAccess,asyncHandler(controller.history)); router.get('/:id',readAccess,asyncHandler(controller.get));
+router.post('/',writeAccess,asyncHandler(controller.create)); router.patch('/:id',writeAccess,asyncHandler(controller.update)); router.patch('/:id/status',writeAccess,asyncHandler(controller.status));
+router.post('/:id/assignees',adminAccess,asyncHandler(controller.assignees)); router.delete('/:id/assignees/:technicianId',adminAccess,asyncHandler(controller.removeAssignee)); router.delete('/:id',adminAccess,asyncHandler(controller.remove));
+export default router;

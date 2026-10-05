@@ -1,0 +1,22 @@
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: maintenance-alerts
+    folder: Maintenance
+    interval: 1m
+    rules:
+      - uid: maintenance-5xx
+        title: High 5xx share
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: postgres
+            model: {format: table, rawSql: "SELECT COALESCE(SUM(CASE WHEN status_code >= 500 THEN 1 ELSE 0 END)::float / NULLIF(COUNT(*),0),0) AS value FROM api_request_metrics WHERE created_at > NOW()-INTERVAL '10 minutes'"}
+          - refId: C
+            datasourceUid: __expr__
+            model: {type: threshold, expression: A, conditions: [{evaluator: {params: [0.05], type: gt}, operator: {type: and}, query: {params: [A]}, reducer: {params: [], type: last}, type: query}]}
+        noDataState: NoData
+        execErrState: Error
+        for: 2m
+        annotations: {summary: "Доля 5xx выше 5%", description: "Проверить логи API, состояние PostgreSQL и последние изменения."}

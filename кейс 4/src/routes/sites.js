@@ -1,0 +1,2 @@
+import { Router } from 'express'; import { asyncHandler } from '../middlewares/asyncHandler.js'; import { getSummary } from '../controllers/siteController.js'; import { authenticate } from '../middlewares/auth.js'; import { readAccess } from '../middlewares/rolePolicy.js';
+const router=Router(); router.use(authenticate); router.get('/:id/summary',readAccess,asyncHandler(getSummary)); export default router;

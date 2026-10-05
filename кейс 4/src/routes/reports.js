@@ -1,0 +1,2 @@
+import { Router } from 'express'; import { asyncHandler } from '../middlewares/asyncHandler.js'; import { equipmentLoadReport } from '../controllers/reportController.js'; import { authenticate } from '../middlewares/auth.js'; import { readAccess } from '../middlewares/rolePolicy.js';
+const router=Router(); router.use(authenticate); router.get('/equipment-load',readAccess,asyncHandler(equipmentLoadReport)); export default router;
